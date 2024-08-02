@@ -1,0 +1,57 @@
+#include "stm32f4xx.h"
+#include "uart.h"
+#include "interrupt.h"
+
+void Interrupt_PB_Init(void) {
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+	
+	GPIOB->MODER &= ~(GPIO_MODER_MODER0 | GPIO_MODER_MODER1 | GPIO_MODER_MODER2 | GPIO_MODER_MODER3); 
+	GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPDR0 | GPIO_PUPDR_PUPDR1 | GPIO_PUPDR_PUPDR2 | GPIO_PUPDR_PUPDR3); 
+	GPIOB->PUPDR |= (GPIO_PUPDR_PUPDR0_0 | GPIO_PUPDR_PUPDR1_0 | GPIO_PUPDR_PUPDR2_0 | GPIO_PUPDR_PUPDR3_0);
+
+	
+	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+	SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI0_PB | SYSCFG_EXTICR1_EXTI1_PB | SYSCFG_EXTICR1_EXTI2_PB | SYSCFG_EXTICR1_EXTI3_PB;
+	
+	EXTI->IMR |= EXTI_IMR_MR0 | EXTI_IMR_MR1 | EXTI_IMR_MR2 | EXTI_IMR_MR3;
+	EXTI->RTSR |= EXTI_RTSR_TR0 | EXTI_RTSR_TR1 | EXTI_RTSR_TR2 | EXTI_RTSR_TR3;
+	
+	NVIC_EnableIRQ(EXTI0_IRQn); 
+	NVIC_EnableIRQ(EXTI1_IRQn); 
+	NVIC_EnableIRQ(EXTI2_IRQn); 
+	NVIC_EnableIRQ(EXTI3_IRQn);
+	
+	NVIC_SetPriority(EXTI0_IRQn, 3); 
+	NVIC_SetPriority(EXTI1_IRQn, 4); 
+	NVIC_SetPriority(EXTI2_IRQn, 5); 
+	NVIC_SetPriority(EXTI3_IRQn, 6); 
+
+}
+
+void EXTI0_IRQHandler(void) {
+    if (EXTI->PR & EXTI_PR_PR0) {
+		state = HUMID;
+        EXTI->PR |= EXTI_PR_PR0;
+    }
+}
+
+void EXTI1_IRQHandler(void) {
+    if (EXTI->PR & EXTI_PR_PR1) {
+		state = TEMPERATURE;
+        EXTI->PR |= EXTI_PR_PR1;
+    }
+}
+
+void EXTI2_IRQHandler(void) {
+    if (EXTI->PR & EXTI_PR_PR2) {
+		state = LIGHT;
+        EXTI->PR |= EXTI_PR_PR2;
+    }
+}
+
+void EXTI3_IRQHandler(void) {
+    if (EXTI->PR & EXTI_PR_PR3) {
+		state = DIRT;
+        EXTI->PR |= EXTI_PR_PR3;
+    }
+}
