@@ -29,3 +29,5 @@ dht22\bh1750.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 dht22\bh1750.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
 dht22\bh1750.o: bh1750.h
 dht22\bh1750.o: delay.h
+dht22\bh1750.o: uart.h
+dht22\bh1750.o: interrupt.h

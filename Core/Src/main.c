@@ -12,31 +12,35 @@
 #include "interrupt.h"
 
 volatile uint8_t humid_th = 50;
-volatile uint8_t temperature_th = 25;
+volatile uint8_t temperature_th = 50;
 volatile uint8_t light_th = 50;
 volatile uint8_t dirt_th = 50;
 volatile uint8_t state = DIRT;
 
 int main(void)
 {
+	Timer2_Init();
 	GPIOC0_Init();
 	GPIOC1_Init();
 	GPIOC2_Init();
+	GPIOC0_Off();
+	GPIOC1_Off();
+	GPIOC2_Off();
 	UART1_Init();
 	UART2_Init();
 	ADC_Init();
 	Interrupt_PB_Init();
-	Timer2_Init();
 	Timer3_Init();
 	I2C3_Init();
 	I2C1_Init();
 	LCD_Init();
-	I2C3_SendData(POWER_ON);
-	delay_us(1000);
-	I2C3_SendData(RESET);
-	delay_us(1000);
-	I2C3_SendData(CONTINUOUS_HIGH_RES_MODE);
-	delay_us(120000);
+//	I2C3_SendData(POWER_ON);
+//	UART2_Transmit_String("Hello");
+//	delay_us(1000);
+//	I2C3_SendData(RESET);
+//	delay_us(1000);
+//	I2C3_SendData(CONTINUOUS_HIGH_RES_MODE);
+//	delay_us(120000);
 
 
 	uint32_t dirt_value;
@@ -63,27 +67,26 @@ int main(void)
 	while (1)
 	{
 		//Light intensity sensor
-		float lumen = (float) BH1750_Read() / 1.2;
+		float lumen = 11000 / 1.2;
 		
 		if (lumen > 12000) {
 			lumen = 12000;
 		}
 		
 		lumen = (lumen / 12000) * 100;
-		
-		if (lumen  > (light_th + 10) || lumen < (light_th - 10)) {
-			PWM3_SetDutyCycle(light_th);
-		}
+		PWM3_SetDutyCycle(light_th);
 		
 		// Dirt sensor
-		dirt_value = ADC_Read_Channel_1();
+		dirt_value = ADC_Read_Channel_0();
 		dirt = (float) dirt_value;
-		dirt = (dirt / 4095) * 100; 
+//		dirt = (dirt / 4095) * 100;
+		dirt = 50;
 		if (dirt < dirt_th) {
-			GPIOC1_On();
+			GPIOC2_On();
 		} else {
-			GPIOC1_Off();
+			GPIOC2_Off();
 		}
+		
 
 		// Humidity and temperature sensor
 		DHT22_Start();
@@ -108,11 +111,11 @@ int main(void)
 			
 			//Threshold for fan and mist spray
 			if (humidity < humid_th || temperature > temperature_th) {
-				GPIOC2_Off();
 				GPIOC0_On();
+				GPIOC1_On();
 			} else {
-				GPIOC2_On();
 				GPIOC0_Off();
+				GPIOC1_Off();
 			}
 			
 			if (state == HUMID) {

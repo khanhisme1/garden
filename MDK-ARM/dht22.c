@@ -5,49 +5,44 @@
 
 void DHT22_Start(void)
 {   
-    // Configure PA4 as output
-    GPIOA->MODER &= ~(GPIO_MODER_MODER4);
-    GPIOA->MODER |= GPIO_MODER_MODER4_0;
+    // Configure PA1 as output
+    GPIOA->MODER &= ~(GPIO_MODER_MODER1);
+    GPIOA->MODER |= GPIO_MODER_MODER1_0;
     
 	//Pull up
-	GPIOA->PUPDR &= ~(GPIO_PUPDR_PUPDR4);
-    GPIOA->PUPDR |= GPIO_PUPDR_PUPDR4_0;
+	GPIOA->PUPDR &= ~(GPIO_PUPDR_PUPDR1);
+    GPIOA->PUPDR |= GPIO_PUPDR_PUPDR1_0;
 
-    // Set PA4 as high speed
-    GPIOA->OSPEEDR &= ~(GPIO_OSPEEDER_OSPEEDR4);
-    GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR4;
+    // Set PA1 as high speed
+    GPIOA->OSPEEDR &= ~(GPIO_OSPEEDER_OSPEEDR1);
+    GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR1;
 	
-    // Reset PA4
-    GPIOA->ODR &= ~GPIO_ODR_ODR_4;
+    // Reset PA1
+    GPIOA->ODR &= ~GPIO_ODR_ODR_1;
     delay_us(1000);
 
-    // Set PA4
-    GPIOA->ODR |= GPIO_ODR_ODR_4;
+    // Set PA1
+    GPIOA->ODR |= GPIO_ODR_ODR_1;
     delay_us(20);
-	GPIOA->ODR &= ~GPIO_ODR_ODR_4;
+	GPIOA->ODR &= ~GPIO_ODR_ODR_1;
 	
-    // Set PA4 as input
-    GPIOA->MODER &= ~GPIO_MODER_MODER4;
-	
-	// Pull up
-	GPIOA->PUPDR &= ~GPIO_PUPDR_PUPDR4;
-
-	// Out speed disabled
-    GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR4;
+    // Set PA1 as input
+    GPIOA->MODER &= ~GPIO_MODER_MODER1;
+	GPIOA->PUPDR &= ~GPIO_PUPDR_PUPDR1;
+    GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR1;
 }
 
 uint8_t DHT22_Check_Response (void) {
     uint8_t response = 0;
     delay_us(40);
 	
-	//Check if the data is ready to be sent
-    if (!(GPIOA->IDR & GPIO_IDR_IDR_4))
+    if (!(GPIOA->IDR & GPIO_IDR_IDR_1))
     {
         delay_us(80);
-        if (GPIOA->IDR & GPIO_IDR_IDR_4) response = 1;
+        if (GPIOA->IDR & GPIO_IDR_IDR_1) response = 1;
         else response = 2;
     }
-    while (GPIOA->IDR & GPIO_IDR_IDR_4); // wait till input is 0
+    while (GPIOA->IDR & GPIO_IDR_IDR_1);
 
     return response;
 }
@@ -55,19 +50,18 @@ uint8_t DHT22_Check_Response (void) {
 uint8_t DHT22_Read()
 {
     uint8_t data, i;
-	//Read 8 bit
     for(i = 0; i < 8; i++)
     {
-        while (!(GPIOA->IDR & GPIO_IDR_IDR_4));
+        while (!(GPIOA->IDR & GPIO_IDR_IDR_1));
         delay_us(40);
-        if (!(GPIOA->IDR & GPIO_IDR_IDR_4)) {
+        if (!(GPIOA->IDR & GPIO_IDR_IDR_1)) {
 			data &= ~(1<<(7-i));
 		}
         else
         {
             data |= (1<<(7-i));
         }
-		while (GPIOA->IDR & GPIO_IDR_IDR_4);
+		while (GPIOA->IDR & GPIO_IDR_IDR_1);
     }
 	return data;
 }

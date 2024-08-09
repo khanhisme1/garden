@@ -1,0 +1,12 @@
+*.ioc
+*.mxproject
+*.o
+*.d
+*.hex
+*.crf
+*.axf
+*.map
+*.lnp
+*.sct
+*.dep
+*.iex
