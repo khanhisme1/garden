@@ -29,4 +29,4 @@ dht22\dht22.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 dht22\dht22.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
 dht22\dht22.o: dht22.h
 dht22\dht22.o: delay.h
-dht22\dht22.o: lcd.h
+dht22\dht22.o: interrupt.h

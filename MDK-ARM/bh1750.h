@@ -2,6 +2,10 @@
 
 extern volatile uint8_t light_th;
 extern volatile uint8_t dirt_th;
+extern volatile uint8_t bh1750_state;
+
+#define ERROR 1
+#define NORMAL 0
 
 #define I2C_TIMEOUT 100000
 #define BH1750_ADDRESS 0x46

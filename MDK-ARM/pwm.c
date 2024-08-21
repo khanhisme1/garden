@@ -4,6 +4,7 @@
 void Timer3_Init(void) {
 	//GPIOA Clock
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+	GPIOA->ODR &= ~((uint32_t) (1 << 6));
 	
 	//Timer 3 clock
     RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
@@ -29,6 +30,8 @@ void Timer3_Init(void) {
 	
 	//Enable timer 3
     TIM3->CR1 |= TIM_CR1_CEN;
+	
+	TIM3->CCR1 = 0;
 }
 
 void Timer4_Init(void) {
@@ -59,6 +62,8 @@ void Timer4_Init(void) {
 	
 	//Enable timer 4
     TIM4->CR1 |= TIM_CR1_CEN;
+	
+	TIM4->CCR1 = 0;
 }
 
 void PWM3_SetDutyCycle(uint8_t value) {

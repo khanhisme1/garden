@@ -1,8 +1,15 @@
 #include "stm32f4xx.h"
 #include "bh1750.h"
 #include "delay.h"
-#include "uart.h"
-#include "interrupt.h"
+
+void BH1750_Init(void) {
+	I2C3_SendData(POWER_ON);
+	delay_us(1000);
+	I2C3_SendData(RESET);
+	delay_us(1000);
+	I2C3_SendData(CONTINUOUS_HIGH_RES_MODE);
+	delay_us(120000);
+}
 
 
 void I2C3_Init(void) {
@@ -47,6 +54,7 @@ void I2C3_Init(void) {
 
 
 void I2C3_SendData(uint8_t data) {
+	bh1750_state = NORMAL
     uint32_t timeout = I2C_TIMEOUT;
 
     // Acknowledge enable
@@ -54,80 +62,98 @@ void I2C3_SendData(uint8_t data) {
 
     // Send start signal
     I2C3->CR1 |= I2C_CR1_START;
-    while(!(I2C3->SR1 & I2C_SR1_SB) && timeout--);
-    if (timeout == 0) {
-		state = ERROR_BH1750;
-        return;
-    }
+    while(!(I2C3->SR1 & I2C_SR1_SB) && timeout--)
+    {
+		if (timeout == 0) {
+			bh1750_state = ERROR;
+			return;
+		}
+	}
 
     // Send slave address
     I2C3->DR = BH1750_ADDRESS;
     timeout = I2C_TIMEOUT;
-    while(!(I2C3->SR1 & I2C_SR1_ADDR) && timeout--);
-    if (timeout == 0) {
-		state = ERROR_BH1750;
-        return;
-    }
+    while(!(I2C3->SR1 & I2C_SR1_ADDR) && timeout--)
+    {
+		if (timeout == 0) {
+			bh1750_state = ERROR;
+			return;
+		}
+	}
 
     (void)I2C3->SR1;
     (void)I2C3->SR2;
 
     // Send data
     timeout = I2C_TIMEOUT;
-    while (!(I2C3->SR1 & I2C_SR1_TXE) && timeout--);
-    if (timeout == 0) {
-		state = ERROR_BH1750;
-        return;
-    }
+    while (!(I2C3->SR1 & I2C_SR1_TXE) && timeout--)
+    {
+		if (timeout == 0) {
+			bh1750_state = ERROR;
+			return;
+		}
+	}
 
     I2C3->DR = data;
     timeout = I2C_TIMEOUT;
-    while(!(I2C3->SR1 & I2C_SR1_BTF) && timeout--);
-    if (timeout == 0) {
-		state = ERROR_BH1750;
-        return;
-    }
+    while(!(I2C3->SR1 & I2C_SR1_BTF) && timeout--)
+    {
+		if (timeout == 0) {
+			bh1750_state = ERROR;
+			return;
+		}
+	}
 
     // Send stop signal
     I2C3->CR1 |= I2C_CR1_STOP;
 }
 
 uint16_t BH1750_Read(void) {
+	bh1750_state = NORMAL;
     uint16_t lumen = 0;
     uint32_t timeout = I2C_TIMEOUT;
 
     I2C3->CR1 |= I2C_CR1_START;
-    while (!(I2C3->SR1 & I2C_SR1_SB) && timeout--);
-    if (timeout == 0) {
-        return 0xFFFF;
-    }
+    while (!(I2C3->SR1 & I2C_SR1_SB) && timeout--)
+    {
+		if (timeout == 0) {
+			bh1750_state = ERROR;
+			return 0;
+		}
+	}
 
     I2C3->DR = (BH1750_ADDRESS) | 1;
     timeout = I2C_TIMEOUT;
-    while (!(I2C3->SR1 & I2C_SR1_ADDR) && timeout--);
-    if (timeout == 0) {
-		state = ERROR_BH1750;
-        return 0xFFFF;
-    }
+    while (!(I2C3->SR1 & I2C_SR1_ADDR) && timeout--)
+    {
+		if (timeout == 0) {
+			bh1750_state = ERROR;
+			return 0;
+		}
+	}
 
     (void)I2C3->SR1;
     (void)I2C3->SR2;
 
     timeout = I2C_TIMEOUT;
-    while (!(I2C3->SR1 & I2C_SR1_RXNE) && timeout--);
-    if (timeout == 0) {
-		state = ERROR_BH1750;
-        return 0xFFFF;
-    }
+    while (!(I2C3->SR1 & I2C_SR1_RXNE) && timeout--)
+    {
+		if (timeout == 0) {
+			bh1750_state = ERROR;
+			return 0;
+		}
+	}
 
     lumen = I2C3->DR << 8;
 
     timeout = I2C_TIMEOUT;
-    while (!(I2C3->SR1 & I2C_SR1_RXNE) && timeout--);
-    if (timeout == 0) {
-		state = ERROR_BH1750;
-        return 0xFFFF;
-    }
+    while (!(I2C3->SR1 & I2C_SR1_RXNE) && timeout--)
+    {
+		if (timeout == 0) {
+			bh1750_state = ERROR;
+			return 0;
+		}
+	}
 
     lumen |= I2C3->DR;
 
