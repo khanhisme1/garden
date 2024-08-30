@@ -43,12 +43,11 @@ uint8_t DHT22_Check_Response (void) {
         if (GPIOA->IDR & GPIO_IDR_IDR_1) response = 1;
         else response = 2;
     }
-    while (GPIOA->IDR & GPIO_IDR_IDR_1 && timeout--) 
+    while ((GPIOA->IDR & GPIO_IDR_IDR_1) && timeout--) 
 	{
 		if (timeout == 0) 
 		{
 			dht22_state = ERROR;
-			return response;
 		}
 	}
 

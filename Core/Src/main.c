@@ -23,7 +23,6 @@ int main(void)
 {
 	Timer2_Init();
 	Timer3_Init();
-	Timer2_Init();
 	GPIOC0_Init();
 	GPIOC1_Init();
 	GPIOC2_Init();
@@ -63,30 +62,33 @@ int main(void)
 		if (state == HUMID) {
 			if (dht22_state == ERROR) {
 				LCD_PutString("DHT22 ERROR     ", 1);
+				delay_us(100);
 				LCD_PutString("DHT22 ERROR     ", 2);
-				continue;
+			} else {
+				LCD_PutString("HUMIDITY:       ", 1);
+				LCD_PutFloatString(humidity, "%            ", 2);
 			}
-			LCD_PutString("HUMIDITY:       ", 1);
-			LCD_PutFloatString(humidity, "%     ", 2);
 		} else if (state == TEMPERATURE) {
 			if (dht22_state == ERROR) {
 				LCD_PutString("DHT22 ERROR     ", 1);
+				delay_us(100);
 				LCD_PutString("DHT22 ERROR     ", 2);
-				continue;
+			} else {
+				LCD_PutString("TEMPERATURE:    ", 1);
+				LCD_PutFloatString(temperature, "\'C          " , 2);
 			}
-			LCD_PutString("TEMPERATURE:    ", 1);
-			LCD_PutFloatString(temperature, "\'C   " , 2);
 		} else if (state == LIGHT) {
 			if (bh1750_state == ERROR) {
 				LCD_PutString("BH1750 ERROR    ", 1);
+				delay_us(100);
 				LCD_PutString("BH1750 ERROR    ", 2);
-				continue;
+			} else {
+				LCD_PutString("LIGHT INTENSITY:", 1);
+				LCD_PutFloatString(lumen, " lux         ",  2);
 			}
-			LCD_PutString("LIGHT INTENSITY:", 1);
-			LCD_PutFloatString(lumen, " lux  ",  2);
 		} else if (state == DIRT){
 			LCD_PutString("SOIL HUMIDITY:  ", 1);
-			LCD_PutFloatString(dirt, "%     ", 2);
+			LCD_PutFloatString(dirt, "%            ", 2);
 		}
 		
 		//Light intensity sensor
@@ -101,8 +103,7 @@ int main(void)
 		// Dirt sensor
 		dirt_value = ADC_Read_Channel_0();
 		dirt = (float) dirt_value;
-//		dirt = (dirt / 4095) * 100;
-		dirt = 50;
+		dirt =  100 - (dirt / 4095) * 100;
 		if (dirt < dirt_th) {
 			GPIOC2_On();
 		} else {
@@ -141,8 +142,7 @@ int main(void)
 			}
 		}
 		
-		
-		// Check every 700ms
-		delay_us(700000);
+		// Check every 400ms
+		delay_us(400000);
 	}
 }

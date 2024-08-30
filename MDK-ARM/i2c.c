@@ -37,27 +37,46 @@ void I2C1_Init(void)
 
 void I2C1_SendData(uint8_t address, uint8_t data)
 {
+	uint32_t timeout = I2C_TIMEOUT;
 	//Acknowlegde enable
 	I2C1->CR1 |= I2C_CR1_ACK;
 	
 	//Send start signal
     I2C1->CR1 |= I2C_CR1_START;
-    while(!(I2C1->SR1 & I2C_SR1_SB));
+    while(!(I2C1->SR1 & I2C_SR1_SB) && timeout--) {
+		if (timeout == 0) {
+			break;
+		}
+	}
 	
-	
+	timeout = I2C_TIMEOUT;
 	//Send slave address
     I2C1->DR = address;
-    while(!(I2C1->SR1 & I2C_SR1_ADDR));
+    while(!(I2C1->SR1 & I2C_SR1_ADDR)) {
+		if (timeout == 0) {
+			break;
+		}
+	}
 
     
 	(void)I2C1->SR1;
     (void)I2C1->SR2;
 	
+	timeout = I2C_TIMEOUT;
 	//Send data
-	while (!(I2C1->SR1 & I2C_SR1_TXE));
+	while (!(I2C1->SR1 & I2C_SR1_TXE)) {
+		if (timeout == 0) {
+			break;
+		}
+	}
 	
+	timeout = I2C_TIMEOUT;
     I2C1->DR = data;
-    while(!(I2C1->SR1 & I2C_SR1_BTF));
+    while(!(I2C1->SR1 & I2C_SR1_BTF)) {
+		if (timeout == 0) {
+			break;
+		}
+	}
 	
 	//Send stop signal
     I2C1->CR1 |= I2C_CR1_STOP;

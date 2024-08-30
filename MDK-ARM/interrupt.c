@@ -17,7 +17,7 @@ void Interrupt_PB_Init(void) {
 	
 	NVIC_EnableIRQ(EXTI0_IRQn); 
 	NVIC_EnableIRQ(EXTI1_IRQn); 
-	NVIC_EnableIRQ(EXTI2_IRQn); 
+	NVIC_EnableIRQ(EXTI2_IRQn);
 	NVIC_EnableIRQ(EXTI3_IRQn);
 	
 	NVIC_SetPriority(EXTI0_IRQn, 3); 

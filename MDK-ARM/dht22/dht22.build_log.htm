@@ -28,27 +28,23 @@ Project File Date:  07/31/2024
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin'
 Build target 'dht22'
 compiling main.c...
-..\MDK-ARM\dht22.h(7): warning:  #1295-D: Deprecated declaration DHT22_Read - give arg types
+..\MDK-ARM\dht22.h(11): warning:  #1295-D: Deprecated declaration DHT22_Read - give arg types
   uint8_t DHT22_Read();
-..\MDK-ARM\bh1750.h(6): warning:  #47-D: incompatible redefinition of macro "I2C_TIMEOUT"  (declared at line 3 of "..\MDK-ARM\i2c.h")
+..\MDK-ARM\bh1750.h(10): warning:  #47-D: incompatible redefinition of macro "I2C_TIMEOUT"  (declared at line 3 of "..\MDK-ARM\i2c.h")
   #define I2C_TIMEOUT 100000
-..\MDK-ARM\bh1750.h(15): warning:  #1-D: last line of file ends without a newline
+..\MDK-ARM\bh1750.h(19): warning:  #1-D: last line of file ends without a newline
   uint16_t BH1750_Read(void);
-..\MDK-ARM\interrupt.h(13): warning:  #1-D: last line of file ends without a newline
+..\MDK-ARM\interrupt.h(11): warning:  #1-D: last line of file ends without a newline
   void Interrupt_PB_Init(void);
-../Core/Src/main.c(153): warning:  #1-D: last line of file ends without a newline
+../Core/Src/main.c(148): warning:  #1-D: last line of file ends without a newline
   }
-../Core/Src/main.c(56): warning:  #550-D: variable "sum"  was set but never used
+../Core/Src/main.c(46): warning:  #550-D: variable "sum"  was set but never used
   	uint8_t sum;
-../Core/Src/main.c(64): warning:  #177-D: variable "temperature1"  was declared but never referenced
-  	uint8_t temperature1;
-../Core/Src/main.c(65): warning:  #177-D: variable "humidity1"  was declared but never referenced
-  	uint8_t humidity1;
-../Core/Src/main.c: 8 warnings, 0 errors
+../Core/Src/main.c: 6 warnings, 0 errors
 linking...
-Program Size: Code=8256 RO-data=612 RW-data=20 ZI-data=1636  
+Program Size: Code=8256 RO-data=612 RW-data=24 ZI-data=1632  
 FromELF: creating hex file...
-"dht22\dht22.axf" - 0 Error(s), 8 Warning(s).
+"dht22\dht22.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -71,7 +67,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE@5.6.0
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

@@ -54,7 +54,7 @@ void I2C3_Init(void) {
 
 
 void I2C3_SendData(uint8_t data) {
-	bh1750_state = NORMAL
+	bh1750_state = NORMAL;
     uint32_t timeout = I2C_TIMEOUT;
 
     // Acknowledge enable
@@ -66,7 +66,6 @@ void I2C3_SendData(uint8_t data) {
     {
 		if (timeout == 0) {
 			bh1750_state = ERROR;
-			return;
 		}
 	}
 
@@ -77,7 +76,6 @@ void I2C3_SendData(uint8_t data) {
     {
 		if (timeout == 0) {
 			bh1750_state = ERROR;
-			return;
 		}
 	}
 
@@ -90,7 +88,6 @@ void I2C3_SendData(uint8_t data) {
     {
 		if (timeout == 0) {
 			bh1750_state = ERROR;
-			return;
 		}
 	}
 
@@ -100,7 +97,6 @@ void I2C3_SendData(uint8_t data) {
     {
 		if (timeout == 0) {
 			bh1750_state = ERROR;
-			return;
 		}
 	}
 
@@ -118,7 +114,6 @@ uint16_t BH1750_Read(void) {
     {
 		if (timeout == 0) {
 			bh1750_state = ERROR;
-			return 0;
 		}
 	}
 
@@ -128,7 +123,6 @@ uint16_t BH1750_Read(void) {
     {
 		if (timeout == 0) {
 			bh1750_state = ERROR;
-			return 0;
 		}
 	}
 
@@ -140,7 +134,6 @@ uint16_t BH1750_Read(void) {
     {
 		if (timeout == 0) {
 			bh1750_state = ERROR;
-			return 0;
 		}
 	}
 
@@ -151,7 +144,6 @@ uint16_t BH1750_Read(void) {
     {
 		if (timeout == 0) {
 			bh1750_state = ERROR;
-			return 0;
 		}
 	}
 
